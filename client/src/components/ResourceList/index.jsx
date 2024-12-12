@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 import "./ResourceList.scss";
 
-export default function ResourceList({ publish, resources }) {
+export default function ResourceList({ publish, onBookmark, resources }) {
 	return (
 		<ul className="resource-list">
 			{resources.length === 0 && (
@@ -10,25 +10,43 @@ export default function ResourceList({ publish, resources }) {
 					<em>No resources to show.</em>
 				</li>
 			)}
-			{resources.map(({ description, id, title, topic_name, url }) => (
-				<li key={id}>
-					<div>
-						<h3>{title}</h3>
-						{topic_name && <span className="topic">{topic_name}</span>}
-					</div>
-					{description && <p className="resource-description">{description}</p>}
-					<div>
-						<a href={url}>{formatUrl(url)}</a>
-						{publish && <button onClick={() => publish(id)}>Publish</button>}
-					</div>
-				</li>
-			))}
+			{resources.map(
+				({ description, id, title, topic_name, url, is_bookmarked }) => (
+					<li key={id}>
+						<div>
+							<h3>{title}</h3>
+							{topic_name && <span className="topic">{topic_name}</span>}
+						</div>
+						{description && (
+							<p className="resource-description">{description}</p>
+						)}
+						<div>
+							<a href={url}>{formatUrl(url)}</a>
+							{publish && <button onClick={() => publish(id)}>Publish</button>}
+							{onBookmark && is_bookmarked !== undefined && (
+								<button
+									className="bookmark-button"
+									onClick={() => onBookmark(id, !is_bookmarked)}
+									title={`Tap to ${
+										is_bookmarked ? "remove from bookmarks" : "add bookmark"
+									}`}
+									aria-label="Bookmark resource"
+									aria-pressed={is_bookmarked}
+								>
+									{is_bookmarked ? "★" : "☆"}
+								</button>
+							)}
+						</div>
+					</li>
+				)
+			)}
 		</ul>
 	);
 }
 
 ResourceList.propTypes = {
 	publish: PropTypes.func,
+	onBookmark: PropTypes.func,
 	resources: PropTypes.arrayOf(
 		PropTypes.shape({
 			description: PropTypes.string,
@@ -36,6 +54,7 @@ ResourceList.propTypes = {
 			title: PropTypes.string.isRequired,
 			topic_name: PropTypes.string,
 			url: PropTypes.string.isRequired,
+			is_bookmarked: PropTypes.bool,
 		})
 	).isRequired,
 };

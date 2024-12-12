@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { useAuthenticatedFetch } from "../authContext";
 
+export { default as BookmarkService } from "./bookmarkService";
 export { default as ResourceService } from "./resourceService";
 export { default as TopicService } from "./topicService";
 

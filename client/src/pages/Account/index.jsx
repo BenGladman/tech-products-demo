@@ -1,15 +1,26 @@
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import { usePrincipal } from "../../authContext";
-import { Button } from "../../components";
+import { Button, ResourceList } from "../../components";
+import { BookmarkService, useService } from "../../services";
 
 import "./Account.scss";
 
 export default function Account() {
 	const principal = usePrincipal();
+	const bookmarkService = useService(BookmarkService);
+
+	const [{ resources } = {}, setEnvelope] = useState();
+
+	useEffect(() => {
+		bookmarkService.findAll().then(setEnvelope);
+	}, [bookmarkService]);
+
 	if (!principal) {
 		return <Navigate to="/" />;
 	}
+
 	return (
 		<>
 			<h2>Account</h2>
@@ -25,6 +36,20 @@ export default function Account() {
 					</tr>
 				</tbody>
 			</table>
+
+			{resources && resources.length > 0 && (
+				<div>
+					<h3>Bookmarks</h3>
+					<ResourceList
+						resources={resources}
+						onBookmark={bookmarkService.optimisticUpdate(
+							resources,
+							(newResources) => setEnvelope({ resources: newResources })
+						)}
+					/>
+				</div>
+			)}
+
 			<form
 				action="/api/auth/logout"
 				aria-labelledby="logout-button"

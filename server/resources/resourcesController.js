@@ -31,7 +31,9 @@ router
 			if (draft && !req.superuser && !req.user?.is_admin) {
 				return res.sendStatus(403);
 			}
-			res.send(await service.getAll({ draft }, { page, perPage }));
+			res.send(
+				await service.getAll({ draft, userId: req.user?.id }, { page, perPage })
+			);
 		})
 	)
 	.post(

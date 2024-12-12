@@ -17,11 +17,15 @@ export const create = async (resource) => {
 	return await repository.add(resource);
 };
 
-export async function getAll({ draft = false }, { page = 1, perPage = 20 }) {
+export async function getAll(
+	{ draft = false, userId = undefined },
+	{ page = 1, perPage = 20 }
+) {
 	const resources = await repository.findAll({
 		draft,
 		limit: perPage,
 		offset: (page - 1) * perPage,
+		userId,
 	});
 	const totalCount = await repository.count({ draft });
 	return {

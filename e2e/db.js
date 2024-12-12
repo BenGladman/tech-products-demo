@@ -7,7 +7,7 @@ module.exports = {
 	async closeConnection() {
 		await pool.end();
 	},
-	async clearDb(tables = ["resources", "sessions", "users"]) {
+	async clearDb(tables = ["resources", "sessions", "users", "bookmarks"]) {
 		for (const tableName of tables) {
 			await pool.query(format("TRUNCATE TABLE %I CASCADE;", tableName));
 		}

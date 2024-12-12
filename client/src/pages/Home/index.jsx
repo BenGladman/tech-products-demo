@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 import { Pagination, ResourceList } from "../../components";
 import { useSearchParams } from "../../hooks";
-import { ResourceService, useService } from "../../services";
+import { BookmarkService, ResourceService, useService } from "../../services";
 
 export function Home() {
 	const resourceService = useService(ResourceService);
+	const bookmarkService = useService(BookmarkService);
 	const searchParams = useSearchParams();
 	const [{ lastPage, resources } = {}, setEnvelope] = useState();
 
@@ -15,7 +16,13 @@ export function Home() {
 
 	return (
 		<section>
-			<ResourceList resources={resources ?? []} />
+			<ResourceList
+				resources={resources ?? []}
+				onBookmark={bookmarkService.optimisticUpdate(
+					resources,
+					(newResources) => setEnvelope({ lastPage, resources: newResources })
+				)}
+			/>
 			<Pagination lastPage={lastPage ?? 1} />
 		</section>
 	);

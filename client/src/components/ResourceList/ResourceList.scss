@@ -64,4 +64,25 @@ ul.resource-list {
 		white-space: pre-line;
 		word-break: break-word;
 	}
+
+	.bookmark-button {
+		border: none;
+		border-radius: 1em;
+		height: 2em;
+		width: 2em;
+
+		&[aria-pressed="true"] {
+			background-color: palette.$green;
+			color: palette.$ultralight-grey;
+
+			&:hover,
+			&:focus {
+				background-color: palette.hover-dark(palette.$green);
+			}
+
+			&:active {
+				background-color: palette.active-dark(palette.$green);
+			}
+		}
+	}
 }

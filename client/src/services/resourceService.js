@@ -11,7 +11,7 @@ export default class ResourceService {
 		);
 		if (res.ok) {
 			const { resources } = await res.json();
-			return resources.map(this._revive.bind(this));
+			return resources.map(reviveResource);
 		}
 		return [];
 	}
@@ -26,7 +26,7 @@ export default class ResourceService {
 		);
 		if (res.ok) {
 			const { resources, ...rest } = await res.json();
-			return { ...rest, resources: resources.map(this._revive.bind(this)) };
+			return { ...rest, resources: resources.map(reviveResource) };
 		}
 	}
 
@@ -37,7 +37,7 @@ export default class ResourceService {
 			method: "PATCH",
 		});
 		if (res.ok) {
-			return this._revive(await res.json());
+			return reviveResource(await res.json());
 		}
 	}
 
@@ -49,19 +49,19 @@ export default class ResourceService {
 		});
 		switch (res.status) {
 			case 201:
-				return this._revive(await res.json());
+				return reviveResource(await res.json());
 			case 409:
 				throw new Error("a very similar resource already exists");
 			default:
 				throw new Error("something went wrong");
 		}
 	}
+}
 
-	_revive({ accession, publication, ...resource }) {
-		return {
-			...resource,
-			accession: accession && new Date(accession),
-			publication: publication && new Date(publication),
-		};
-	}
+export function reviveResource({ accession, publication, ...resource }) {
+	return {
+		...resource,
+		accession: accession && new Date(accession),
+		publication: publication && new Date(publication),
+	};
 }
