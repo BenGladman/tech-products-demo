@@ -11,10 +11,10 @@ const resourceQueryFromAndJoins = singleLine`
 `;
 
 const resourceQueryFilterSortAndPaging = singleLine`
- 	WHERE draft = $1
+	WHERE draft = $1
 	ORDER BY accession DESC
 	LIMIT $2
-  OFFSET $3;
+	OFFSET $3;
 `;
 
 export const add = async ({ description, source, title, topic, url }) => {
@@ -55,7 +55,7 @@ export const findAll = async ({ draft, limit, offset, userId }) => {
 			singleLine`
 				${resourceQuerySelectFields}
 				, (b IS NOT NULL) as is_bookmarked
-  			${resourceQueryFromAndJoins}
+				${resourceQueryFromAndJoins}
 				LEFT JOIN bookmarks as b
 				ON b.user = $4 AND b.resource = r.id
 				${resourceQueryFilterSortAndPaging}
@@ -69,7 +69,7 @@ export const findAll = async ({ draft, limit, offset, userId }) => {
 	const { rows } = await db.query(
 		singleLine`
 			${resourceQuerySelectFields}
-  		${resourceQueryFromAndJoins}
+			${resourceQueryFromAndJoins}
 			${resourceQueryFilterSortAndPaging}
 		`,
 		[draft, limit, offset]
